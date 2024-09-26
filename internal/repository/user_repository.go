@@ -9,6 +9,7 @@ type UserRepository interface {
 	CreateUser(user *domain.User) error
 	GetUserByID(id uint) (*domain.User, error)
 	GetAllUsers() ([]*domain.User, error)
+	GetUserByUserEmail(username string) (*domain.User, error)
 }
 
 // UserRepositoryImpl implementation
@@ -16,7 +17,7 @@ type UserRepositoryImpl struct {
 	DB *gorm.DB
 }
 
-func NewUserRepository(db *gorm.DB) UserRepository {
+func NewUserRepository(db *gorm.DB) *UserRepositoryImpl {
 	return &UserRepositoryImpl{DB: db}
 }
 
@@ -36,4 +37,10 @@ func (r *UserRepositoryImpl) GetAllUsers() ([]*domain.User, error) {
 		return nil, err
 	}
 	return users, nil
+}
+
+func (r *UserRepositoryImpl) GetUserByUserEmail(username string) (*domain.User, error) {
+	var user domain.User
+	err := r.DB.Preload("Role").First(&user, "email = ?", username).Error
+	return &user, err
 }

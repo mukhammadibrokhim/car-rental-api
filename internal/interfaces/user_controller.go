@@ -19,13 +19,11 @@ func NewUserController(uc usecase.UserUsecase) *UserController {
 func (c *UserController) CreateUser(ctx *gin.Context) {
 	var user domain.User
 
-	// Bind JSON or form data to the User struct
 	if err := ctx.ShouldBindJSON(&user); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	// Pass the user to the use case
 	if err := c.UserUsecase.CreateUser(&user); err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create user"})
 		return
@@ -35,11 +33,13 @@ func (c *UserController) CreateUser(ctx *gin.Context) {
 }
 
 func (c *UserController) GetUser(ctx *gin.Context) {
+
 	id := ctx.Param("id")
 
 	uintId, err := strconv.ParseUint(id, 10, 64)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
 
 	user, err := c.UserUsecase.GetUserByID(uint(uintId))
@@ -50,6 +50,13 @@ func (c *UserController) GetUser(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, user)
 }
 
+// @Summary Get all users
+// @Description Get a list of users
+// @ID get-users
+// @Accept  json
+// @Produce  json
+// @Success 200 {array} User // Replace User with your actual response type
+// @Router /api/users [get]
 func (c *UserController) GetAllUsers(ctx *gin.Context) {
 	users, err := c.UserUsecase.GetAllUsers()
 	if err != nil {
