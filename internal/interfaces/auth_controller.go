@@ -15,13 +15,15 @@ func NewAuthController(authUsecase usecase.AuthUsecase) *AuthController {
 	return &AuthController{AuthUsecase: authUsecase}
 }
 
-// @Summary Login user
-// @Description Login with email and password
-// @ID login-user
-// @Accept  json
-// @Produce  json
-// @Param input body LoginInput true "Login Input"
-// @Success 200 {object} LoginResponse
+// Login godoc
+// @Summary Login with credentials
+// @Description Authenticate the user and return a token
+// @Tags Auth
+// @Accept json
+// @Produce json
+// @Param credentials body payload.LoginRequest true "Login credentials"
+// @Success 200 {object} payload.LoginResponse
+// @Failure 400 {object} payload.ErrorResponse
 // @Router /api/auth/login [post]
 func (u *AuthController) Login(c *gin.Context) {
 	var request payload.LoginRequest
@@ -40,6 +42,16 @@ func (u *AuthController) Login(c *gin.Context) {
 
 }
 
+// Register godoc
+// @Summary Register with credentials
+// @Description Register the user and return a token
+// @Tags Auth
+// @Accept json
+// @Produce json
+// @Param credentials body payload.RegisterRequest true "Register "
+// @Success 200 {object} payload.RegisterResponse
+// @Failure 400 {object} payload.ErrorResponse
+// @Router /api/auth/register [post]
 func (u *AuthController) Register(c *gin.Context) {
 	var request payload.RegisterRequest
 	if err := c.ShouldBindJSON(&request); err != nil {

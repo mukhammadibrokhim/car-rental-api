@@ -16,6 +16,14 @@ func NewUserController(uc usecase.UserUsecase) *UserController {
 	return &UserController{UserUsecase: uc}
 }
 
+// CreateUser godoc
+// @Tags Users
+// @Summary Create a new user
+// @Description Create a new user in the system
+// @Accept json
+// @Produce json
+// @Param user body domain.User true "User details"
+// @Router /api/users [post]
 func (c *UserController) CreateUser(ctx *gin.Context) {
 	var user domain.User
 
@@ -32,6 +40,15 @@ func (c *UserController) CreateUser(ctx *gin.Context) {
 	ctx.JSON(http.StatusCreated, gin.H{"message": "User created successfully"})
 }
 
+// GetUser godoc
+// @Tags Users
+// @Summary Get a user by ID
+// @Description Get details of a specific user by ID
+// @Produce json
+// @Param id path int true "User ID"
+// @Success 200 {object} domain.User // Replace domain.User with your actual user type
+// @Security ApiKeyAuth
+// @Router /api/users/{id} [get]
 func (c *UserController) GetUser(ctx *gin.Context) {
 
 	id := ctx.Param("id")
@@ -50,12 +67,14 @@ func (c *UserController) GetUser(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, user)
 }
 
+// GetAllUsers godoc
+// @Tags Users
 // @Summary Get all users
 // @Description Get a list of users
-// @ID get-users
-// @Accept  json
-// @Produce  json
-// @Success 200 {array} User // Replace User with your actual response type
+// @Accept json
+// @Produce json
+// @Success 200 {array} domain.User // Replace domain.User with your actual response type
+// @Security BearerAuth
 // @Router /api/users [get]
 func (c *UserController) GetAllUsers(ctx *gin.Context) {
 	users, err := c.UserUsecase.GetAllUsers()

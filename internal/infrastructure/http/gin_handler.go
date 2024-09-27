@@ -1,15 +1,12 @@
 package http
 
 import (
-	_ "car-rental-api/cmd/app/docs" // Ensure this is correctly imported for swagger
 	"car-rental-api/internal/interfaces"
 	"car-rental-api/internal/repository"
 	"car-rental-api/internal/usecase"
 	"fmt"
 	"github.com/gin-gonic/gin"
 
-	swaggerFiles "github.com/swaggo/files"
-	ginSwagger "github.com/swaggo/gin-swagger"
 	"gorm.io/gorm"
 )
 
@@ -43,8 +40,9 @@ func InitializeRoutes(r *gin.Engine, db *gorm.DB) {
 		roles := api.Group("/roles", AuthMiddleware())
 		{
 			roles.POST("", roleController.CreateRole)
-			roles.GET(":id", roleController.GetRole)
+			roles.GET(":id", roleController.GetRoleId)
 		}
+
 		bookings := api.Group("/bookings", AuthMiddleware())
 		{
 			bookings.GET("")
@@ -52,8 +50,6 @@ func InitializeRoutes(r *gin.Engine, db *gorm.DB) {
 			bookings.GET(":id")
 		}
 	}
-
-	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	r.NoRoute(func(c *gin.Context) {
 		c.JSON(404, gin.H{"error": "Route not found"})
@@ -63,5 +59,5 @@ func InitializeRoutes(r *gin.Engine, db *gorm.DB) {
 		c.JSON(200, gin.H{"message": "pong"})
 	})
 
-	fmt.Println("Routes has been initialized!")
+	fmt.Println("Routes have been initialized!")
 }
